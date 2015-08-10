@@ -3,10 +3,6 @@ class Transfer
   # code here
 attr_accessor :name, :from, :amount, :status
 
-	def self.scan
-		
-	end
-
   def initialize(name, from, amount)
   	@name = name
   	@from = from
@@ -24,5 +20,19 @@ attr_accessor :name, :from, :amount, :status
 
   def both_valid?
   	@name.valid? && @from.valid?
+  	sender.valid? && receiver.valid?
   end
+
+  def execute_transaction
+  	unless self.status == 'complete'
+  		sender.balance = sender.balance - @amount 
+  		receiver.deposit(amount)
+  		self.status = 'complete'
+  	end
+			# binding.pry
+  	# if self.status == 'complete'
+			"Transaction rejected. Please check your account balance."  
+			# self.status = 'rejected'
+		# end
+	end
 end
