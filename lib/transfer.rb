@@ -24,15 +24,23 @@ attr_accessor :name, :from, :amount, :status
   end
 
   def execute_transaction
-  	unless self.status == 'complete'
+  	unless self.status == "complete"
   		sender.balance = sender.balance - @amount 
   		receiver.deposit(amount)
   		self.status = 'complete'
+				if sender.valid? == false
+					self.status = 'rejected'
+					"Transaction rejected. Please check your account balance."  
+				end
   	end
-			# binding.pry
-  	# if self.status == 'complete'
-			"Transaction rejected. Please check your account balance."  
-			# self.status = 'rejected'
-		# end
 	end
+
+	def reverse_transfer
+		if self.status == 'complete'
+			sender.deposit(amount)
+			@from.balance = @from.balance - amount  
+			self.status = 'reversed'
+		end
+	end
+	
 end
